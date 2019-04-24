@@ -1,0 +1,69 @@
+<project name="simpleAntIvyProject" default="build" xmlns:ivy="antlib:org.apache.ivy.ant" basedir=".">
+    <!-- properties -->
+    <property name="src.dir" value="src"/>
+    <property name="lib.dir" value="lib"/>
+    <property name="build.dir" value="build"/>
+
+    <!-- paths used for compilation and run  -->
+    <path id="lib.path.id">
+        <fileset dir="${lib.dir}"/>
+    </path>
+
+    <path id="run.path.id">
+        <path refid="lib.path.id"/>
+        <path location="${build.dir}"/>
+    </path>
+
+    <!-- target: resolve -->
+    <target name="resolve" description="--> retreive dependencies with ivy">
+        <ivy:retrieve/>
+    </target>
+
+    <!-- target: report -->
+    <target name="report" depends="resolve" description="--> generates a report of dependencies">
+        <ivy:report todir="${build.dir}"/>
+    </target>
+
+    <!-- target: build -->
+    <target name="build" depends="resolve" description="--> build project">
+        <mkdir dir="${build.dir}"/>
+        <javac srcdir="${src.dir}" destdir="${build.dir}" classpathref="lib.path.id" includeAntRuntime="false"/>
+    </target>
+
+    <!-- target: run-test -->
+    <target name="run-tests" depends="build" description="--> runing tests">
+        <junitlauncher>
+            <classpath refid="run.path.id"/>
+            <test name="SimplestTests" haltOnFailure="false"/>
+            <test name="SimplestGHTests" haltonfailure="false"/>
+            <listener type="legacy-xml" sendSysOut="true" sendSysErr="true"/>
+            <listener type="legacy-plain" sendSysOut="true" />
+        </junitlauncher>
+
+        <mkdir dir="reports"/>
+        <junitreport todir="./reports">
+            <fileset dir="${basedir}">
+                <include name="TEST-*.xml"/>
+            </fileset>
+            <report format="frames" todir="./reports/html"/>
+        </junitreport>
+    </target>
+
+    <!-- target: clean -->
+    <target name="clean" description="--> clean the project">
+        <delete includeemptydirs="true">
+            <fileset dir="${basedir}">
+                <exclude name="${src.dir}/**"/>
+                <exclude name="build.xml"/>
+                <exclude name="ivy.xml"/>
+                <exclude name="*.iml"/>
+                <exclude name=".idea/"/>
+            </fileset>
+        </delete>
+    </target>
+
+    <!-- target: clean-ivy-cache -->
+    <target name="clean-cache" description="--> clean the ivy cache">
+        <ivy:cleancache/>
+    </target>
+</project>

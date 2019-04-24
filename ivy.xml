@@ -1,0 +1,9 @@
+<ivy-module version="2.0">
+    <info organisation="org.apache" module="hello-ivy"/>
+    <dependencies>
+        <dependency org="commons-lang" name="commons-lang" rev="2.6"/>
+        <dependency org="commons-cli" name="commons-cli" rev="1.4"/>
+        <dependency org="org.seleniumhq.selenium" name="selenium-java" rev="3.141.59"/>
+        <dependency org="org.junit.jupiter" name="junit-jupiter-api" rev="5.4.2"/>
+    </dependencies>
+</ivy-module>
